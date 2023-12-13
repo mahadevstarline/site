@@ -462,6 +462,7 @@
                                     <th>Game Type</th>
                                     <th>Session</th>
                                     <th>Points</th>
+                                    <th>Bid Digit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -923,7 +924,7 @@
                     if (!querySnapshotr.empty) {
                     querySnapshotr.forEach(doc => {
                         const data = doc.data();
-                        const { game_name,timestamp, points,oc , type } = data;
+                        const { game_name,timestamp,number, points,oc , type } = data;
                         const newRow = tableBodyr.insertRow();
                         
                         const cellNumber = newRow.insertCell();
@@ -932,12 +933,14 @@
                         const celltype = newRow.insertCell();
                         const cellsession = newRow.insertCell();
                         const cellpoint = newRow.insertCell();
+                        const cellbidnum = newRow.insertCell();
                         cellNumber.textContent = rowNumberr++;
                         celldate.textContent = timestamp.toDate().toDateString().substring(0,11);
                         cellgame.textContent = game_name;
                         celltype.textContent = type;
                         cellsession.textContent = oc;
                         cellpoint.textContent = points;
+                        cellbidnum.textContent = number;
                         
                 });
             }

@@ -1185,7 +1185,7 @@
                     querySnapshot.forEach(doc => {
                         const data = doc.data();
                         const { points ,game_name, type,username } = data;
-                        const newRow = tableBody.insertRow();
+                        const newRow = tableBod.insertRow();
                         
                         const cellNumber = newRow.insertCell();
                         const cellusername = newRow.insertCell();
@@ -1193,7 +1193,7 @@
                         const celltype = newRow.insertCell();
                         const cellpoint = newRow.insertCell();
                         
-                        cellNumber.textContent = rowNumber++;
+                        cellNumber.textContent = rowNum++;
                         cellusername.textContent = username;
                         cellgame.textContent = game_name;
                         celltype.textContent = type;
