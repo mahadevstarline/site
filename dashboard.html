@@ -746,6 +746,27 @@
     </div>
     <div class="card">
         <div class="card-body">
+            <h5>Day Bid List</h5>
+
+            <div class="table-responsive">
+                <table id="daybidlist" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Game Name</th>
+                        <th>Game Type</th>
+                        <th>(₹) Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
             <h5>Day Win List</h5>
 
             <div class="table-responsive">
@@ -803,6 +824,7 @@
                         <th>User Phone</th>
                         <th>User Name</th>
                         <th>(₹) Amount</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -1068,7 +1090,7 @@
             if (!quernapshot.empty) {
                 quernapshot.forEach(doc => {
                     const data = doc.data();
-                    const { credits,timestamp, mno,username } = data;
+                    const { credits,timestamp, mno,username, userId } = data;
                     const newRow = tableBody.insertRow();
                     
                     const cellNumber = newRow.insertCell();
@@ -1076,12 +1098,25 @@
                     const cellmno = newRow.insertCell();
                     const cellusername = newRow.insertCell();
                     const cellcredits = newRow.insertCell();
+                    const cellAction = newRow.insertCell();
                     
                     cellNumber.textContent = rowNumber++;
                     celldate.textContent = timestamp.toDate().getHours() + ":" + timestamp.toDate().getMinutes()+" " + timestamp.toDate().toDateString().substring(0,11);
                     cellmno.textContent = mno;
                     cellusername.textContent = username;
                     cellcredits.textContent = credits;
+                    const button = document.createElement('button');
+                    button.classList.add("mdi", "mdi-eye", "font-size-18", "text-primary");
+                    button.style.border = 'none'; /* Remove border */
+                    button.style.backgroundColor = '#ffffff'; /* Set background color to transparent */
+                    button.style.padding = '0';
+                    const link = `https://mahadevstarline.github.io/site/user/profile/userProfile.html?userId=${userId}`;
+                    button.onclick = function() {
+                        window.location.href = link;
+                    };
+
+                    // Append the button to the cellAction cell
+                    cellAction.appendChild(button);
                     val=val+credits;
                     });
             }  
@@ -1100,7 +1135,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
     import {  getFirestore, collection,doc, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js';
 
-    
     document.getElementById('searchForm1').onsubmit = function () {
         event.preventDefault();
         
@@ -1139,15 +1173,31 @@
                 //const startTimestamp = startOfDay.getTime();
                 //const endTimestamp = endOfDay.getTime();
 
+                const tableBod = document.getElementById('daybidlist').getElementsByTagName('tbody')[0];
+                tableBod.innerHTML = ''; // Clear the table body before populating new data
+                let rowNum = 1;
                 const settingsRef = collection(db, 'bid_history_admin');
                 const q = query(settingsRef, where('timestamp', '>=', startOfDay), where('timestamp', '<=', endOfDay));
                 const querySnapshot = await getDocs(q);
-            
 
                 var bid = 0;
                 if (!querySnapshot.empty) {
                     querySnapshot.forEach(doc => {
-                        const points = doc.data().points;
+                        const data = doc.data();
+                        const { points ,game_name, type,username } = data;
+                        const newRow = tableBody.insertRow();
+                        
+                        const cellNumber = newRow.insertCell();
+                        const cellusername = newRow.insertCell();
+                        const cellgame = newRow.insertCell();
+                        const celltype = newRow.insertCell();
+                        const cellpoint = newRow.insertCell();
+                        
+                        cellNumber.textContent = rowNumber++;
+                        cellusername.textContent = username;
+                        cellgame.textContent = game_name;
+                        celltype.textContent = type;
+                        cellpoint.textContent = points;
                         bid=bid+points;
                     });
                 }
@@ -1217,17 +1267,15 @@
     async function populateFormFields() {
         const firebaseConfig = {
             apiKey: "AIzaSyDGzXuv1re9hpOqykP6hDH2qWVMBCtbOJE",
-  authDomain: "mahadev-efece.firebaseapp.com",
-  projectId: "mahadev-efece",
-  storageBucket: "mahadev-efece.appspot.com",
-  messagingSenderId: "483675302264",
-  appId: "1:483675302264:web:c72b4b367de8817f84c08d",
-  measurementId: "G-0907T7GTET"
+            authDomain: "mahadev-efece.firebaseapp.com",
+            projectId: "mahadev-efece",
+            storageBucket: "mahadev-efece.appspot.com",
+            messagingSenderId: "483675302264",
+            appId: "1:483675302264:web:c72b4b367de8817f84c08d",
+            measurementId: "G-0907T7GTET"
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);                            
-
-        
 
         try {
             
